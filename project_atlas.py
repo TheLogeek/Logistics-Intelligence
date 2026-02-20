@@ -33,7 +33,7 @@ st.markdown("""
     --border-accent:  rgba(0,209,162,0.35);
     --text-primary:   #F0F4FF;
     --text-secondary: #8B9BB8;
-    --text-muted:     #4A5568;
+    --text-muted:     #6B7A99;
     --accent:         #00D1A2;
     --accent-dim:     rgba(0,209,162,0.12);
     --accent-glow:    rgba(0,209,162,0.25);
@@ -83,29 +83,94 @@ header { visibility: hidden; }
     font-family: var(--font-sans) !important;
 }
 
-/* Sidebar section headers */
+/* Sidebar collapse/expand arrow button */
+[data-testid="stSidebarCollapsedControl"] button,
+[data-testid="stSidebarCollapseButton"] button,
+button[kind="headerNoPadding"],
+[data-testid="collapsedControl"] {
+    color: #F0F4FF !important;
+    background: #1A2540 !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 6px !important;
+}
+[data-testid="stSidebarCollapsedControl"] button svg,
+[data-testid="stSidebarCollapseButton"] button svg,
+[data-testid="collapsedControl"] svg {
+    fill: #F0F4FF !important;
+    color: #F0F4FF !important;
+    stroke: #F0F4FF !important;
+}
+
+/* Sidebar toggle arrows (all variants) */
+section[data-testid="stSidebar"] > div > button {
+    color: #F0F4FF !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+section[data-testid="stSidebar"] > div > button:hover {
+    background: rgba(255,255,255,0.15) !important;
+}
+
+/* Widget labels */
+label, .stTextInput label, .stSelectbox label,
+.stMultiSelect label, .stSlider label,
+[data-testid="stWidgetLabel"] {
+    color: #8B9BB8 !important;
+    font-size: 0.78rem !important;
+    font-weight: 500 !important;
+}
+
+/* Widget inputs */
+[data-testid="stSelectbox"] > div > div,
+[data-testid="stMultiSelect"] > div > div {
+    background: #111827 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: var(--radius-sm) !important;
+    color: #F0F4FF !important;
+}
+
+/* Multiselect tags */
+[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
+    background: rgba(0,209,162,0.15) !important;
+    color: #00D1A2 !important;
+}
+
+/* Dropdown options */
+[data-testid="stSelectbox"] ul li,
+[data-testid="stMultiSelect"] ul li {
+    color: #F0F4FF !important;
+    background: #111827 !important;
+}
+
+/* Selectbox arrow icon */
+[data-testid="stSelectbox"] svg {
+    color: #8B9BB8 !important;
+    fill: #8B9BB8 !important;
+}
+
+/* Sidebar section label class */
 .sidebar-section {
-    font-family: var(--font-mono);
     font-size: 0.65rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: #8B9BB8;
     padding: 1.25rem 0 0.5rem 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     margin-bottom: 0.85rem;
 }
 
-/* ── Streamlit widgets dark-mode override ── */
-[data-testid="stSelectbox"] > div,
-[data-testid="stMultiSelect"] > div {
-    background: var(--bg-elevated) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: var(--radius-sm) !important;
-    color: var(--text-primary) !important;
+/* Expander */
+[data-testid="stExpander"] summary {
+    background: #0D1421 !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: var(--radius-md) !important;
+    color: #F0F4FF !important;
+    padding: 0.75rem 1rem !important;
 }
-[data-testid="stSlider"] .rc-slider-track { background: var(--accent) !important; }
-[data-testid="stSlider"] .rc-slider-handle { border-color: var(--accent) !important; }
+[data-testid="stExpander"] summary svg {
+    color: #8B9BB8 !important;
+    fill: #8B9BB8 !important;
+}
 
 .stDownloadButton > button {
     background: var(--accent-dim) !important;
@@ -241,7 +306,7 @@ with st.sidebar:
         <div style="width:34px;height:34px;background:linear-gradient(135deg,#00D1A2,#007AFF);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🛰️</div>
         <div>
             <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#F0F4FF;letter-spacing:0.03em;">ATLAS</div>
-            <div style="font-size:0.62rem;color:#4A5568;letter-spacing:0.1em;text-transform:uppercase;">Logistics Intelligence</div>
+            <div style="font-size:0.62rem;color:#6B7A99;letter-spacing:0.1em;text-transform:uppercase;">Logistics Intelligence</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -382,7 +447,7 @@ with map_col:
             <span style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#F0F4FF;">
                 Delivery Density Map
             </span>
-            <span style="margin-left:0.6rem;font-size:0.72rem;color:#4A5568;font-family:'DM Mono',monospace;">
+            <span style="margin-left:0.6rem;font-size:0.72rem;color:#6B7A99;font-family:'DM Mono',monospace;">
                 Lagos Metro · {n} active nodes
             </span>
         </div>
@@ -451,10 +516,10 @@ with insight_col:
                     border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.6rem;
                     border-left:3px solid {color};">
             <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;
-                        color:#4A5568;font-weight:500;margin-bottom:0.2rem;">{icon} {label}</div>
+                        color:#6B7A99;font-weight:500;margin-bottom:0.2rem;">{icon} {label}</div>
             <div style="font-family:'DM Mono',monospace;font-size:1.05rem;
                         font-weight:500;color:#F0F4FF;">{value}</div>
-            {f'<div style="font-size:0.7rem;color:#4A5568;margin-top:0.15rem;">{sub}</div>' if sub else ''}
+            {f'<div style="font-size:0.7rem;color:#6B7A99;margin-top:0.15rem;">{sub}</div>' if sub else ''}
         </div>"""
 
     delayed_pct  = f"{delayed/len(df)*100:.1f}%"
@@ -500,33 +565,35 @@ with zone_col:
     st.dataframe(zone_stats, use_container_width=True, hide_index=True)
 
 with table_col:
-    # Per-zone efficiency gauge (simplified bar)
+    # Per-zone efficiency gauge - build full HTML string first, then render once
     max_orders = zone_stats['Orders'].max()
-    gauge_html = ""
+    gauge_rows = ""
     for _, row in zone_stats.iterrows():
         pct = int(row['Orders'] / max_orders * 100)
-        color = "#FF4D6A" if row['Critical'] > 0 else "#00D1A2"
-        gauge_html += f"""
-        <div style="margin-bottom:0.55rem;">
-            <div style="display:flex;justify-content:space-between;margin-bottom:0.2rem;">
-                <span style="font-size:0.75rem;color:#8B9BB8;">{row['Zone']}</span>
-                <span style="font-size:0.72rem;font-family:'DM Mono',monospace;color:#F0F4FF;">
-                    {row['Orders']} orders · {row['Load (kg)']} kg
-                </span>
-            </div>
-            <div style="height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;">
-                <div style="width:{pct}%;height:100%;background:{color};border-radius:3px;
-                            transition:width 0.5s ease;"></div>
-            </div>
-        </div>"""
-    st.markdown(f"""
-    <div style="background:#0D1421;border:1px solid rgba(255,255,255,0.06);
-                border-radius:10px;padding:1.1rem 1.2rem;margin-top:0.15rem;">
-        <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;
-                    color:#4A5568;font-weight:500;margin-bottom:0.9rem;">Load Distribution</div>
-        {gauge_html}
-    </div>
-    """, unsafe_allow_html=True)
+        bar_color = "#FF4D6A" if row['Critical'] > 0 else "#00D1A2"
+        zone_name = row['Zone']
+        orders_val = row['Orders']
+        load_val = row['Load (kg)']
+        gauge_rows += (
+            '<div style="margin-bottom:0.65rem;">'
+            '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.25rem;">'
+            f'<span style="font-size:0.75rem;color:#8B9BB8;font-family:\'DM Sans\',sans-serif;">{zone_name}</span>'
+            f'<span style="font-size:0.72rem;font-family:\'DM Mono\',monospace;color:#F0F4FF;">{orders_val} orders · {load_val} kg</span>'
+            '</div>'
+            '<div style="height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;">'
+            f'<div style="width:{pct}%;height:100%;background:{bar_color};border-radius:3px;"></div>'
+            '</div>'
+            '</div>'
+        )
+    gauge_full = (
+        '<div style="background:#0D1421;border:1px solid rgba(255,255,255,0.06);'
+        'border-radius:10px;padding:1.1rem 1.2rem;margin-top:0.15rem;">'
+        '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;'
+        'color:#8B9BB8;font-weight:600;margin-bottom:0.9rem;">Load Distribution</div>'
+        + gauge_rows +
+        '</div>'
+    )
+    st.markdown(gauge_full, unsafe_allow_html=True)
 
 st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
 
@@ -575,30 +642,33 @@ with search_col:
     selected_order = st.selectbox("Select Order ID", df['order_id'].tolist(), label_visibility="collapsed")
     order_info = df[df['order_id'] == selected_order].iloc[0]
 
-    # Mini order list (top 8)
-    list_html = """
-    <div style="margin-top:0.75rem;background:#0D1421;border:1px solid rgba(255,255,255,0.06);
-                border-radius:10px;overflow:hidden;">
-        <div style="padding:0.55rem 0.85rem;background:rgba(255,255,255,0.03);
-                    font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:#4A5568;
-                    border-bottom:1px solid rgba(255,255,255,0.05);">Recent Orders</div>
-    """
+    # Mini order list (top 8) - build full string then render once
+    list_rows = ""
     for _, row in df.head(8).iterrows():
-        sc = STATUS_COLORS.get(row['delivery_status'],'#8B9BB8')
-        pc = PRIORITY_COLORS.get(row['priority'],'#8B9BB8')
+        sc = STATUS_COLORS.get(row['delivery_status'], '#8B9BB8')
+        pc = PRIORITY_COLORS.get(row['priority'], '#8B9BB8')
         is_sel = row['order_id'] == selected_order
-        bg = "rgba(0,209,162,0.06)" if is_sel else "transparent"
-        list_html += f"""
-        <div style="padding:0.45rem 0.85rem;border-bottom:1px solid rgba(255,255,255,0.04);
-                    background:{bg};display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-family:'DM Mono',monospace;font-size:0.75rem;color:#F0F4FF;">{row['order_id']}</span>
-            <div style="display:flex;gap:0.3rem;align-items:center;">
-                <span style="width:5px;height:5px;border-radius:50%;background:{pc};display:inline-block;"></span>
-                <span style="width:5px;height:5px;border-radius:50%;background:{sc};display:inline-block;"></span>
-            </div>
-        </div>"""
-    list_html += "</div>"
-    st.markdown(list_html, unsafe_allow_html=True)
+        bg = "rgba(0,209,162,0.07)" if is_sel else "transparent"
+        oid = row['order_id']
+        list_rows += (
+            f'<div style="padding:0.45rem 0.85rem;border-bottom:1px solid rgba(255,255,255,0.04);'
+            f'background:{bg};display:flex;justify-content:space-between;align-items:center;">'
+            f'<span style="font-family:\'DM Mono\',monospace;font-size:0.75rem;color:#F0F4FF;">{oid}</span>'
+            f'<div style="display:flex;gap:0.35rem;align-items:center;">'
+            f'<span style="width:6px;height:6px;border-radius:50%;background:{pc};display:inline-block;"></span>'
+            f'<span style="width:6px;height:6px;border-radius:50%;background:{sc};display:inline-block;"></span>'
+            f'</div>'
+            f'</div>'
+        )
+    list_full = (
+        '<div style="margin-top:0.75rem;background:#0D1421;border:1px solid rgba(255,255,255,0.06);border-radius:10px;overflow:hidden;">'
+        '<div style="padding:0.55rem 0.85rem;background:rgba(255,255,255,0.03);font-size:0.65rem;'
+        'text-transform:uppercase;letter-spacing:0.1em;color:#8B9BB8;font-weight:600;'
+        'border-bottom:1px solid rgba(255,255,255,0.05);">Recent Orders</div>'
+        + list_rows +
+        '</div>'
+    )
+    st.markdown(list_full, unsafe_allow_html=True)
 
 with detail_col:
     pc   = PRIORITY_COLORS.get(order_info['priority'], '#8B9BB8')
@@ -619,7 +689,7 @@ with detail_col:
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;">
             <div>
                 <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;
-                            color:#4A5568;margin-bottom:0.25rem;">Dispatch Ticket</div>
+                            color:#6B7A99;margin-bottom:0.25rem;">Dispatch Ticket</div>
                 <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;
                             color:#F0F4FF;">{order_info['order_id']}</div>
             </div>
@@ -639,33 +709,33 @@ with detail_col:
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem 1.25rem;">
             <div>
                 <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#4A5568;margin-bottom:0.2rem;">Assigned Truck</div>
+                            color:#6B7A99;margin-bottom:0.2rem;">Assigned Truck</div>
                 <div style="font-family:'DM Mono',monospace;font-size:0.9rem;color:#00D1A2;font-weight:500;">
                     Truck {zone+1:02d} · Zone {zone}
                 </div>
             </div>
             <div>
                 <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#4A5568;margin-bottom:0.2rem;">Customer</div>
+                            color:#6B7A99;margin-bottom:0.2rem;">Customer</div>
                 <div style="font-size:0.88rem;color:#F0F4FF;">{order_info['customer']}</div>
             </div>
             <div>
                 <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#4A5568;margin-bottom:0.2rem;">Payload</div>
+                            color:#6B7A99;margin-bottom:0.2rem;">Payload</div>
                 <div style="font-family:'DM Mono',monospace;font-size:0.9rem;color:#F0F4FF;">
                     {order_info['weight_kg']} kg
                 </div>
             </div>
             <div>
                 <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#4A5568;margin-bottom:0.2rem;">ETA</div>
+                            color:#6B7A99;margin-bottom:0.2rem;">ETA</div>
                 <div style="font-family:'DM Mono',monospace;font-size:0.9rem;color:#4E9AF1;">
                     ~{order_info['eta_minutes']} min
                 </div>
             </div>
             <div style="grid-column:span 2;">
                 <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#4A5568;margin-bottom:0.2rem;">GPS Coordinates</div>
+                            color:#6B7A99;margin-bottom:0.2rem;">GPS Coordinates</div>
                 <div style="font-family:'DM Mono',monospace;font-size:0.82rem;color:#8B9BB8;">
                     {order_info['lat']:.6f}, {order_info['lon']:.6f}
                 </div>
@@ -712,10 +782,10 @@ st.markdown("""
         <div style="width:18px;height:18px;background:linear-gradient(135deg,#00D1A2,#007AFF);
                     border-radius:4px;"></div>
         <span style="font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:700;
-                     color:#2A3550;letter-spacing:0.05em;">ATLAS</span>
-        <span style="font-size:0.72rem;color:#2A3550;">by Nexus Tech Analytics</span>
+                     color:#8B9BB8;letter-spacing:0.05em;">ATLAS</span>
+        <span style="font-size:0.72rem;color:#6B7A99;">by Nexus Tech Analytics</span>
     </div>
-    <div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:#2A3550;letter-spacing:0.05em;">
+    <div style="font-family:'DM Mono',monospace;font-size:0.68rem;color:#6B7A99;letter-spacing:0.05em;">
         Framework v2.0 · Lagos Metro Simulation
     </div>
 </div>
