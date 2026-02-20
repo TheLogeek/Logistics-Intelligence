@@ -15,8 +15,6 @@ Built as a framework for logistics analysts, operations leads, and fleet manager
 
 ## Screenshots
 
-> _Replace the placeholder below with actual screenshots after deploying._
-
 ```
 [ Dashboard Overview ]          [ Dispatch Control Center ]
 [ 3D Density Heatmap Map ]      [ Zone Load Distribution ]
