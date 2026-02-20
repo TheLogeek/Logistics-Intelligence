@@ -5,6 +5,8 @@
 
 ---
 
+[View Live demo](https://atlas-logistics-intelligence.streamlit.app)
+
 ## Overview
 
 Project Atlas is an interactive logistics analytics dashboard that simulates real-world fleet operations for a metropolitan delivery network. It uses **K-Means clustering** to automatically group delivery points into optimal truck zones, surfaces key operational metrics at a glance, and provides a full dispatch control interface — all wrapped in a polished, enterprise-quality UI.
