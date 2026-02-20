@@ -60,7 +60,10 @@ html, body, [class*="css"] {
 /* Remove default Streamlit chrome */
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
-header { visibility: hidden; }
+header {
+    height: 0px;
+    overflow: visible;
+}
 .block-container {
     padding: 1.5rem 2.5rem 3rem 2.5rem;
     max-width: 1600px;
