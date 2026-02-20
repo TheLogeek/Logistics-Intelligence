@@ -5,9 +5,6 @@ import pydeck as pdk
 from sklearn.cluster import KMeans
 import time
 
-# ─────────────────────────────────────────────
-# PAGE CONFIG
-# ─────────────────────────────────────────────
 st.set_page_config(
     page_title="Atlas | Logistics Intelligence",
     page_icon="🛰️",
@@ -15,9 +12,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ─────────────────────────────────────────────
-# ENTERPRISE CSS INJECTION
-# ─────────────────────────────────────────────
+
+# Enterprise CSS injection
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Syne:wght@700;800&display=swap');
@@ -290,7 +286,7 @@ hr { border-color: var(--border) !important; margin: 0.5rem 0 !important; }
 }
 
 
-/* ── FORCE SIDEBAR TOGGLE VISIBILITY ── */
+/* FORCE SIDEBAR TOGGLE VISIBILITY */
 [data-testid="stSidebarCollapseButton"],
 [data-testid="stSidebarCollapsedControl"] {
     display: flex !important;
@@ -303,9 +299,8 @@ hr { border-color: var(--border) !important; margin: 0.5rem 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# DATA
-# ─────────────────────────────────────────────
+
+# Simulated data
 @st.cache_data
 def load_delivery_data():
     np.random.seed(42)
@@ -327,9 +322,9 @@ def load_delivery_data():
 
 df_raw = load_delivery_data()
 
-# ─────────────────────────────────────────────
-# SIDEBAR
-# ─────────────────────────────────────────────
+
+# Sidebar
+
 with st.sidebar:
     # Logo / Brand
     st.markdown("""
@@ -361,9 +356,8 @@ with st.sidebar:
     st.markdown('<div class="sidebar-section">Export</div>', unsafe_allow_html=True)
     # Download button rendered after data is processed (see bottom)
 
-# ─────────────────────────────────────────────
-# FILTER DATA
-# ─────────────────────────────────────────────
+
+# Data Filter
 df = df_raw[
     df_raw['priority'].isin(priority_filter) &
     df_raw['delivery_status'].isin(status_filter)
@@ -373,9 +367,8 @@ if df.empty:
     st.warning("No orders match current filters. Adjust your sidebar selections.")
     st.stop()
 
-# ─────────────────────────────────────────────
-# ZONE OPTIMIZATION
-# ─────────────────────────────────────────────
+
+# Zone Optimization
 @st.cache_data
 def optimize_zones(data, n_clusters):
     kmeans = KMeans(n_clusters=n_clusters, n_init=10, random_state=42)
@@ -385,9 +378,8 @@ def optimize_zones(data, n_clusters):
 
 df = optimize_zones(df, min(num_trucks, len(df)))
 
-# ─────────────────────────────────────────────
-# HEADER
-# ─────────────────────────────────────────────
+
+# Header
 st.markdown("""
 <div style="margin-bottom:1.75rem;">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
@@ -412,9 +404,8 @@ st.markdown("""
 </div>
 """.format(t=pd.Timestamp.now().strftime("%H:%M:%S")), unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# KPI ROW
-# ─────────────────────────────────────────────
+
+# KPI Row
 k1, k2, k3, k4, k5 = st.columns(5)
 
 pending   = len(df[df['delivery_status']=='Pending'])
@@ -434,9 +425,8 @@ with k5:
 
 st.markdown("<div style='height:1.5rem'></div>", unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# STATUS BADGE ROW
-# ─────────────────────────────────────────────
+
+# Status Badge Row
 PRIORITY_COLORS = {'Critical':'#FF4D6A','High':'#F5A623','Medium':'#4E9AF1','Low':'#8B9BB8'}
 STATUS_COLORS   = {'Pending':'#F5A623','In-Transit':'#00D1A2','Delayed':'#FF4D6A'}
 
@@ -466,9 +456,8 @@ for s, c in status_counts.items():
 badges_html += "</div>"
 st.markdown(badges_html, unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# MAP SECTION
-# ─────────────────────────────────────────────
+
+# Map Section
 map_col, insight_col = st.columns([3, 1])
 
 with map_col:
@@ -568,9 +557,8 @@ with insight_col:
 
 st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# ZONE OPTIMIZATION TABLE
-# ─────────────────────────────────────────────
+
+# Zone Optimization Table
 st.markdown("""
 <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;">
     <div style="width:3px;height:1.4rem;background:linear-gradient(180deg,#00D1A2,#007AFF);border-radius:2px;"></div>
@@ -628,9 +616,8 @@ with table_col:
 
 st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# SAVINGS FORECAST
-# ─────────────────────────────────────────────
+
+# Savings Forecast
 def calculate_efficiency(data):
     std_vals = data.groupby('zone_id')[['lat','lon']].std().mean()
     savings = (1 / (std_vals.sum() + 1e-9)) * 100
@@ -655,9 +642,8 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# DISPATCH CONTROL CENTER
-# ─────────────────────────────────────────────
+
+# Dispatch Control Center
 st.markdown("""
 <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;">
     <div style="width:3px;height:1.4rem;background:linear-gradient(180deg,#4E9AF1,#00D1A2);border-radius:2px;"></div>
@@ -785,9 +771,8 @@ with detail_col:
     )
     st.markdown(ticket_html, unsafe_allow_html=True)
 
-# ─────────────────────────────────────────────
-# ORDER TABLE
-# ─────────────────────────────────────────────
+
+# Order Table
 st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
 
 with st.expander("📋  Full Order Manifest", expanded=False):
@@ -798,9 +783,8 @@ with st.expander("📋  Full Order Manifest", expanded=False):
                           'Weight (kg)','ETA (min)','Lat','Lon','Zone']
     st.dataframe(display_df, use_container_width=True, hide_index=True)
 
-# ─────────────────────────────────────────────
-# SIDEBAR DOWNLOAD (needs df to be ready)
-# ─────────────────────────────────────────────
+
+# Sidebar Download (needs dataframe to be ready)
 @st.cache_data
 def convert_df(d):
     return d.to_csv(index=False).encode('utf-8')
@@ -813,9 +797,8 @@ with st.sidebar:
         mime='text/csv',
     )
 
-# ─────────────────────────────────────────────
-# FOOTER
-# ─────────────────────────────────────────────
+
+# Footer
 st.markdown("""
 <div style="margin-top:2.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.05);
             display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
