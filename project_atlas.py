@@ -288,6 +288,17 @@ hr { border-color: var(--border) !important; margin: 0.5rem 0 !important; }
     font-weight: 500 !important;
 }
 
+
+/* ── FORCE SIDEBAR TOGGLE VISIBILITY ── */
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapsedControl"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
