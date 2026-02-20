@@ -83,32 +83,48 @@ header { visibility: hidden; }
     font-family: var(--font-sans) !important;
 }
 
-/* Sidebar collapse/expand arrow button */
-[data-testid="stSidebarCollapsedControl"] button,
-[data-testid="stSidebarCollapseButton"] button,
-button[kind="headerNoPadding"],
-[data-testid="collapsedControl"] {
-    color: #F0F4FF !important;
+/* ── Sidebar collapse/expand arrow — broad selectors to catch all Streamlit versions ── */
+/* The floating arrow button when sidebar is collapsed */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stSidebarCollapsedControl"] button {
     background: #1A2540 !important;
-    border: 1px solid rgba(255,255,255,0.12) !important;
-    border-radius: 6px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 8px !important;
+    color: #F0F4FF !important;
 }
-[data-testid="stSidebarCollapsedControl"] button svg,
-[data-testid="stSidebarCollapseButton"] button svg,
-[data-testid="collapsedControl"] svg {
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="stSidebarCollapsedControl"] button svg {
     fill: #F0F4FF !important;
     color: #F0F4FF !important;
     stroke: #F0F4FF !important;
 }
-
-/* Sidebar toggle arrows (all variants) */
-section[data-testid="stSidebar"] > div > button {
+/* The close arrow inside the sidebar */
+[data-testid="stSidebarCollapseButton"] button {
+    background: rgba(255,255,255,0.06) !important;
+    border-radius: 6px !important;
     color: #F0F4FF !important;
-    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
 }
-section[data-testid="stSidebar"] > div > button:hover {
-    background: rgba(255,255,255,0.15) !important;
+[data-testid="stSidebarCollapseButton"] button svg {
+    fill: #F0F4FF !important;
+    color: #F0F4FF !important;
+    stroke: #F0F4FF !important;
 }
+/* Fallback: any button directly inside the sidebar wrapper divs */
+section[data-testid="stSidebar"] > div:first-child > button,
+section[data-testid="stSidebar"] > div > div > button {
+    color: #F0F4FF !important;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 6px !important;
+}
+section[data-testid="stSidebar"] > div:first-child > button svg,
+section[data-testid="stSidebar"] > div > div > button svg {
+    fill: #F0F4FF !important;
+    color: #F0F4FF !important;
+}
+/* Universal: any SVG inside sidebar that looks like a nav arrow */
+[data-testid="stSidebar"] button svg { fill: #F0F4FF !important; }
 
 /* Widget labels */
 label, .stTextInput label, .stSelectbox label,
@@ -675,74 +691,84 @@ with detail_col:
     sc   = STATUS_COLORS.get(order_info['delivery_status'], '#8B9BB8')
     zone = int(order_info['zone_id'])
 
-    st.markdown(f"""
-    <div style="background:linear-gradient(135deg,#111827 0%,#0D1421 100%);
-                border:1px solid rgba(255,255,255,0.07);border-radius:14px;
-                padding:1.4rem 1.6rem;position:relative;overflow:hidden;">
+    # Convert hex colors to rgba for transparent backgrounds (avoids broken {pc}1A CSS hack)
+    def hex_to_rgba(hex_color, alpha):
+        h = hex_color.lstrip('#')
+        r, g, b = int(h[0:2],16), int(h[2:4],16), int(h[4:6],16)
+        return f"rgba({r},{g},{b},{alpha})"
 
-        <!-- Corner accent -->
-        <div style="position:absolute;top:0;right:0;width:120px;height:120px;
-                    background:radial-gradient(circle at top right,rgba(0,209,162,0.08),transparent 70%);
-                    pointer-events:none;"></div>
+    pc_bg     = hex_to_rgba(pc, 0.12)
+    pc_border = hex_to_rgba(pc, 0.35)
+    sc_bg     = hex_to_rgba(sc, 0.12)
+    sc_border = hex_to_rgba(sc, 0.35)
 
-        <!-- Header -->
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;">
-            <div>
-                <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;
-                            color:#6B7A99;margin-bottom:0.25rem;">Dispatch Ticket</div>
-                <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;
-                            color:#F0F4FF;">{order_info['order_id']}</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.35rem;">
-                <span style="background:{pc}1A;border:1px solid {pc}55;border-radius:5px;
-                             padding:0.2rem 0.6rem;font-size:0.7rem;color:{pc};font-weight:600;">
-                    {order_info['priority']}
-                </span>
-                <span style="background:{sc}1A;border:1px solid {sc}55;border-radius:5px;
-                             padding:0.2rem 0.6rem;font-size:0.7rem;color:{sc};font-weight:600;">
-                    {order_info['delivery_status']}
-                </span>
-            </div>
-        </div>
+    oid        = order_info['order_id']
+    priority   = order_info['priority']
+    status     = order_info['delivery_status']
+    customer   = order_info['customer']
+    weight     = order_info['weight_kg']
+    eta        = order_info['eta_minutes']
+    truck_num  = f"{zone+1:02d}"
+    lat_str    = f"{order_info['lat']:.6f}"
+    lon_str    = f"{order_info['lon']:.6f}"
 
-        <!-- Grid of fields -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem 1.25rem;">
-            <div>
-                <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#6B7A99;margin-bottom:0.2rem;">Assigned Truck</div>
-                <div style="font-family:'DM Mono',monospace;font-size:0.9rem;color:#00D1A2;font-weight:500;">
-                    Truck {zone+1:02d} · Zone {zone}
-                </div>
-            </div>
-            <div>
-                <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#6B7A99;margin-bottom:0.2rem;">Customer</div>
-                <div style="font-size:0.88rem;color:#F0F4FF;">{order_info['customer']}</div>
-            </div>
-            <div>
-                <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#6B7A99;margin-bottom:0.2rem;">Payload</div>
-                <div style="font-family:'DM Mono',monospace;font-size:0.9rem;color:#F0F4FF;">
-                    {order_info['weight_kg']} kg
-                </div>
-            </div>
-            <div>
-                <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#6B7A99;margin-bottom:0.2rem;">ETA</div>
-                <div style="font-family:'DM Mono',monospace;font-size:0.9rem;color:#4E9AF1;">
-                    ~{order_info['eta_minutes']} min
-                </div>
-            </div>
-            <div style="grid-column:span 2;">
-                <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;
-                            color:#6B7A99;margin-bottom:0.2rem;">GPS Coordinates</div>
-                <div style="font-family:'DM Mono',monospace;font-size:0.82rem;color:#8B9BB8;">
-                    {order_info['lat']:.6f}, {order_info['lon']:.6f}
-                </div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    ticket_html = (
+        '<div style="background:linear-gradient(135deg,#111827 0%,#0D1421 100%);'
+        'border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.4rem 1.6rem;">'
+
+        # Corner glow
+        '<div style="position:relative;">'
+        '<div style="position:absolute;top:-1.4rem;right:-1.6rem;width:120px;height:120px;'
+        'background:radial-gradient(circle at top right,rgba(0,209,162,0.08),transparent 70%);'
+        'pointer-events:none;border-radius:14px;"></div>'
+        '</div>'
+
+        # Header row
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.1rem;">'
+        '<div>'
+        '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:#6B7A99;margin-bottom:0.25rem;">Dispatch Ticket</div>'
+        f'<div style="font-family:\'Syne\',sans-serif;font-size:1.3rem;font-weight:800;color:#F0F4FF;">{oid}</div>'
+        '</div>'
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.35rem;">'
+        f'<span style="background:{pc_bg};border:1px solid {pc_border};border-radius:5px;'
+        f'padding:0.2rem 0.65rem;font-size:0.72rem;color:{pc};font-weight:600;">{priority}</span>'
+        f'<span style="background:{sc_bg};border:1px solid {sc_border};border-radius:5px;'
+        f'padding:0.2rem 0.65rem;font-size:0.72rem;color:{sc};font-weight:600;">{status}</span>'
+        '</div>'
+        '</div>'
+
+        # Fields grid
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem 1.25rem;">'
+
+        '<div>'
+        '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:#6B7A99;margin-bottom:0.2rem;">Assigned Truck</div>'
+        f'<div style="font-family:\'DM Mono\',monospace;font-size:0.9rem;color:#00D1A2;font-weight:500;">Truck {truck_num} &middot; Zone {zone}</div>'
+        '</div>'
+
+        '<div>'
+        '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:#6B7A99;margin-bottom:0.2rem;">Customer</div>'
+        f'<div style="font-size:0.88rem;color:#F0F4FF;">{customer}</div>'
+        '</div>'
+
+        '<div>'
+        '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:#6B7A99;margin-bottom:0.2rem;">Payload</div>'
+        f'<div style="font-family:\'DM Mono\',monospace;font-size:0.9rem;color:#F0F4FF;">{weight} kg</div>'
+        '</div>'
+
+        '<div>'
+        '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:#6B7A99;margin-bottom:0.2rem;">ETA</div>'
+        f'<div style="font-family:\'DM Mono\',monospace;font-size:0.9rem;color:#4E9AF1;">~{eta} min</div>'
+        '</div>'
+
+        '<div style="grid-column:span 2;">'
+        '<div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:#6B7A99;margin-bottom:0.2rem;">GPS Coordinates</div>'
+        f'<div style="font-family:\'DM Mono\',monospace;font-size:0.82rem;color:#8B9BB8;">{lat_str}, {lon_str}</div>'
+        '</div>'
+
+        '</div>'  # end grid
+        '</div>'  # end card
+    )
+    st.markdown(ticket_html, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
 # ORDER TABLE
