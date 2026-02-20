@@ -127,8 +127,9 @@ section[data-testid="stSidebar"] > div > div > button svg {
     color: #F0F4FF !important;
 }
 /* Universal: any SVG inside sidebar that looks like a nav arrow */
-[data-testid="stSidebar"] button svg { fill: #F0F4FF !important; }
-
+[data-testid="stSidebar"] button:not([aria-label*="collapse"]) svg {
+    fill: #F0F4FF !important;
+}
 /* Widget labels */
 label, .stTextInput label, .stSelectbox label,
 .stMultiSelect label, .stSlider label,
